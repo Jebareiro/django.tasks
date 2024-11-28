@@ -82,12 +82,11 @@ WSGI_APPLICATION = 'gestortareas.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-        'default': dj_database_url.config(
-            default= 'postgresql://postgres@localhost/postgres',
-            conn_max_age=600
-        )
-    }
-
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),  # Aquí usamos la clave 'DATABASE_URL'
+        conn_max_age=600,  # Mantener las conexiones abiertas por más tiempo para mejorar el rendimiento
+    )
+}
 
 
 # Password validation
