@@ -83,8 +83,8 @@ WSGI_APPLICATION = 'gestortareas.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),  # Aquí usamos la clave 'DATABASE_URL'
-        conn_max_age=600,  # Mantener las conexiones abiertas por más tiempo para mejorar el rendimiento
+        default='sqlite:///db.sqlite3',  # Usa SQLite si no se encuentra DATABASE_URL
+        conn_max_age=600,
     )
 }
 
