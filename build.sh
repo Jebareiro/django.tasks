@@ -2,17 +2,9 @@
 # Exit on error
 set -o errexit
 
-# Actualizar pip
-python -m pip install --upgrade pip
-
-# Instalar las dependencias
 pip install -r requirements.txt
-
-# Convertir los archivos estáticos
+# Convert static asset files
 python manage.py collectstatic --no-input
 
-# Aplicar las migraciones de base de datos
+# Apply any outstanding database migrations
 python manage.py migrate
-
-# Iniciar la aplicación con gunicorn
-gunicorn gestortareas.wsgi:application
