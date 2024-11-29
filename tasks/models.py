@@ -1,15 +1,33 @@
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
-from django.contrib.auth.models import User
 
-# Create your models here.
+class CustomUserManager(BaseUserManager):
+    def create_user(self, username, password=None, **extra_fields):
+        if not username:
+            raise ValueError('El usuario debe tener un nombre de usuario')
+        user = self.model(username=username, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
 
-class Task(models.Model):
-  title = models.CharField(max_length=200)
-  description = models.TextField(max_length=1000)
-  created = models.DateTimeField(auto_now_add=True)
-  datecompleted = models.DateTimeField(null=True, blank=True)
-  important = models.BooleanField(default=False)
-  user = models.ForeignKey(User, on_delete=models.CASCADE)
+    def create_superuser(self, username, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self.create_user(username, password, **extra_fields)
 
-  def __str__(self):
-    return self.title + ' - ' + self.user.username
+class CustomUser(AbstractBaseUser):
+    username = models.CharField(max_length=255, unique=True)
+    email = models.EmailField(blank=True, null=True)
+    first_name = models.CharField(max_length=255, blank=True)
+    last_name = models.CharField(max_length=255, blank=True)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    date_joined = models.DateTimeField(auto_now_add=True)
+
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email']
+
+    def __str__(self):
+        return self.username
